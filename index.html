@@ -54,11 +54,8 @@
 
   /* ---------- sub bar ---------- */
   .sub { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0; }
-  .views { display:flex; align-items:center; gap:4px; font-size:13.5px; }
-  .views .lbl { color:var(--muted); margin-right:12px; }
-  .views button { border:0; background:transparent; padding:6px 12px; border-radius:6px; cursor:pointer; color:var(--fg); }
-  .views button:hover { background:var(--chip); }
-  .views button[aria-pressed="true"] { background:var(--chip); font-weight:500; }
+  .crumb { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); min-height:32px; }
+  .crumb b { font-weight:500; color:var(--fg); background:var(--chip); padding:6px 12px; border-radius:6px; }
   .sub .right { display:flex; align-items:center; gap:14px; color:var(--muted); font-size:13.5px; }
   .icon-btn { border:0; background:transparent; padding:6px; border-radius:6px; cursor:pointer; color:var(--muted); display:grid; place-items:center; }
   .icon-btn:hover { background:var(--chip); color:var(--fg); }
@@ -77,7 +74,6 @@
   .proj .media svg.cover, .proj .media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform .6s cubic-bezier(.2,.7,.2,1); }
   .proj:hover .media svg.cover, .proj:hover .media img { transform:scale(1.03); }
   .proj .num { position:absolute; top:14px; left:14px; z-index:1; font-size:12.5px; color:#5d6068; }
-  .proj .media.photo .num { background:rgba(255,255,255,.88); padding:1px 7px; border-radius:4px; }
   .proj .meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
   .proj .meta b { font-weight:400; }
   .proj .flag { color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 6px; letter-spacing:.08em; font-size:11px; line-height:18px; }
@@ -96,16 +92,7 @@
   .projects.editorial .media { aspect-ratio:1.25; }
   .projects.editorial .body { padding-top:22px; }
 
-  .projects.focus { display:grid; gap:72px; padding-top:44px; border-top:1px solid var(--line); margin-top:44px; }
-  .projects.focus .media { aspect-ratio:1.7; }
-  .projects.focus .body { padding-top:24px; }
-  .projects.focus h3 { font-size:30px; }
 
-  .projects.index { border-top:1px solid var(--line); margin-top:44px; }
-  .projects.index .proj { display:grid; grid-template-columns:230px 1fr; gap:30px; padding:28px 0; border-bottom:1px solid var(--line); }
-  .projects.index .media { aspect-ratio:230/144; }
-  .projects.index h3 { margin:10px 0 10px; }
-  .projects.index p { margin-bottom:14px; }
 
   /* ---------- background ---------- */
   .block { margin-top:72px; }
@@ -147,6 +134,10 @@
   .links.small h3 { font-size:20px; }
   .links.small .link { padding:20px 0; }
 
+  .toast { position:fixed; left:50%; bottom:28px; transform:translate(-50%, 20px); opacity:0; pointer-events:none; background:var(--fg); color:var(--bg); padding:11px 16px; border-radius:8px; font-size:14px; box-shadow:0 8px 24px rgba(0,0,0,.18); transition:opacity .2s, transform .2s; z-index:10; max-width:calc(100% - 32px); }
+  .toast.on { opacity:1; transform:translate(-50%, 0); }
+  .link .btns { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+
   /* ---------- footer ---------- */
   footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px 24px; padding:26px 0 44px; margin-top:64px; border-top:1px solid var(--line); font-size:13.5px; color:var(--muted); }
   footer .r { display:flex; gap:30px; }
@@ -162,14 +153,12 @@
     .nav { order:3; width:100%; gap:26px; margin:0; }
     .btn.cv span { display:none; }
     .sub .right .tagline { display:none; }
-    .views .lbl { display:none; }
     .page { padding-top:36px; }
     .projects.editorial { grid-template-columns:1fr; }
-    .projects.index .proj { grid-template-columns:1fr; gap:18px; }
     .row { grid-template-columns:1fr; gap:6px; padding-top:26px; }
     .row.skill { padding-top:20px; }
     .link { grid-template-columns:24px 1fr; }
-    .link .btn { grid-column:2; justify-self:start; }
+    .link .btns { grid-column:2; justify-content:flex-start; }
     footer .r { gap:20px; }
   }
   @media (prefers-reduced-motion: reduce) { .page.on { animation:none; } * { transition:none !important; } }
@@ -193,12 +182,7 @@
   </header>
 
   <div class="sub">
-    <div class="views" role="group" aria-label="Project layout">
-      <span class="lbl" data-ui="layout"></span>
-      <button data-view="editorial" data-ui="vEditorial"></button>
-      <button data-view="focus" data-ui="vFocus"></button>
-      <button data-view="index" data-ui="vIndex"></button>
-    </div>
+    <div class="crumb" id="crumb"></div>
     <div class="right">
       <span class="tagline" data-ui="tagline"></span>
       <button class="icon-btn" id="theme" aria-label="Light / dark">
@@ -219,6 +203,7 @@
   </footer>
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="content.js"></script>
 <script>
 (() => {
@@ -232,20 +217,24 @@
 
   /* ---------- language ---------- */
   const UI = {
-    en: { navProjects:"Projects", navBackground:"Background", navLinks:"Links", myCv:"My CV", layout:"Layout",
-          vEditorial:"01 Editorial", vFocus:"02 Focus", vIndex:"03 Index", tagline:"One path. Many perspectives.",
+    en: { navProjects:"Projects", navBackground:"Background", navLinks:"Links", myCv:"My CV",
+          tagline:"One path. Many perspectives.",
           flagship:"Flagship", education:"Education", experience:"Internships & experience", skills:"Skills", interests:"Areas of interest",
           downloadCv:"Download my CV", soon:"Soon", open:"Open", download:"Download", write:"Write to me", contact:"Contact",
           ghDesc:"Code, contributions and open-source projects.", liDesc:"My background and professional network.",
           cvTitle:"Curriculum vitæ", cvDesc:"My path in one document.", talkTitle:"Let's talk", talkDesc:"Projects, research and opportunities.",
-          useful:"Useful links", theme:"Light / dark" },
-    fr: { navProjects:"Projets", navBackground:"Parcours", navLinks:"Liens", myCv:"Mon CV", layout:"Présentation",
-          vEditorial:"01 Éditorial", vFocus:"02 Focus", vIndex:"03 Index", tagline:"Un parcours. Plusieurs perspectives.",
+          useful:"Useful links", theme:"Light / dark",
+          crumbProjects:"Selected work", projectsWord:"projects", crumbBackground:"Education · Experience · Skills", crumbLinks:"GitHub · LinkedIn · CV · Contact",
+          copy:"Copy email", copied:"Email copied —" },
+    fr: { navProjects:"Projets", navBackground:"Parcours", navLinks:"Liens", myCv:"Mon CV",
+          tagline:"Un parcours. Plusieurs perspectives.",
           flagship:"Projet phare", education:"Formation", experience:"Stages & expériences", skills:"Compétences", interests:"Domaines d'intérêt",
           downloadCv:"Télécharger mon CV", soon:"Bientôt", open:"Ouvrir", download:"Télécharger", write:"M'écrire", contact:"Contact",
           ghDesc:"Code, contributions et projets open source.", liDesc:"Mon parcours et mon réseau professionnel.",
           cvTitle:"Mon curriculum vitæ", cvDesc:"Mon parcours en un document.", talkTitle:"Discutons ensemble", talkDesc:"Projets, recherche et opportunités.",
-          useful:"Liens utiles", theme:"Clair / sombre" },
+          useful:"Liens utiles", theme:"Clair / sombre",
+          crumbProjects:"Sélection de travaux", projectsWord:"projets", crumbBackground:"Formation · Expériences · Compétences", crumbLinks:"GitHub · LinkedIn · CV · Contact",
+          copy:"Copier l'email", copied:"Email copié —" },
   };
   const urlLang = new URLSearchParams(location.search).get("lang");
   let lang = ["en", "fr"].includes(urlLang) ? urlLang : (store.get("lang") === "fr" ? "fr" : "en");
@@ -384,7 +373,6 @@
   const hero = h => `<p class="kicker">${esc(t(h.kicker))}</p><h1>${esc(t(h.title))}</h1><p class="intro">${esc(t(h.intro))}</p>`;
   const tags = list => (list && list.length) ? `<div class="tags">${list.map(x => `<span>${esc(t(x))}</span>`).join("")}</div>` : "";
   const ext = url => /^https?:/.test(url) ? ' target="_blank" rel="noopener"' : "";
-  let view = ["editorial", "focus", "index"].includes(store.get("view")) ? store.get("view") : "index";
 
   /* ---------- render everything ---------- */
   function render() {
@@ -399,7 +387,7 @@
     $("footLinks").innerHTML = [
       S.links.github && `<a href="${esc(S.links.github)}" target="_blank" rel="noopener">GitHub ${ic.arrow}</a>`,
       S.links.linkedin && `<a href="${esc(S.links.linkedin)}" target="_blank" rel="noopener">LinkedIn ${ic.arrow}</a>`,
-      `<a href="${S.links.email ? "mailto:" + esc(S.links.email) : "#links"}">${u("contact")} ${ic.arrow}</a>`,
+      `<a href="${S.links.email ? "mailto:" + esc(S.links.email) : "#links"}" data-mail>${u("contact")} ${ic.arrow}</a>`,
     ].filter(Boolean).join("");
 
     // projects
@@ -427,26 +415,27 @@
     // links
     $("linksHero").innerHTML = hero(S.linksPage);
     const L = S.links;
-    const linkRow = (icon, title, desc, href, label, opts = "") => `
+    const linkRow = (icon, title, desc, href, label, opts = "", extra = "") => `
       <div class="link">${icon}<div><h3>${esc(title)}</h3><p>${esc(desc)}</p></div>
-        ${href ? `<a class="btn" href="${esc(href)}" ${opts}>${label}</a>` : `<span class="btn ghost">${u("soon")}</span>`}</div>`;
+        <div class="btns">${extra}${href ? `<a class="btn" href="${esc(href)}" ${opts}>${label}</a>` : `<span class="btn ghost">${u("soon")}</span>`}</div></div>`;
     $("linkList").innerHTML =
       linkRow(ic.github, "GitHub", u("ghDesc"), L.github, `${u("open")} ${ic.arrow}`, 'target="_blank" rel="noopener"') +
       linkRow(ic.linkedin, "LinkedIn", u("liDesc"), L.linkedin, `${u("open")} ${ic.arrow}`, 'target="_blank" rel="noopener"') +
       linkRow(ic.down, u("cvTitle"), u("cvDesc"), L.cv, `${u("download")} ${ic.down}`, "download") +
-      linkRow(ic.mail, u("talkTitle"), u("talkDesc"), L.email && "mailto:" + L.email, `${u("write")} ${ic.arrow}`);
+      linkRow(ic.mail, u("talkTitle"), L.email || u("talkDesc"), L.email && "mailto:" + L.email, `${u("write")} ${ic.arrow}`, "data-mail",
+        L.email ? `<button class="btn" data-copy>${u("copy")}</button>` : "");
     $("usefulWrap").innerHTML = (S.usefulLinks && S.usefulLinks.length)
       ? `<p class="useful-title">${u("useful")}</p><div class="links small">${S.usefulLinks.map(x => linkRow(ic.link, t(x.title), t(x.desc), x.url, `${u("open")} ${ic.arrow}`, ext(x.url))).join("")}</div>` : "";
   }
 
   function renderProjects() {
     const list = $("projectList");
-    list.className = "projects " + view;
+    list.className = "projects editorial";
     list.innerHTML = S.projects.map((p, i) => {
       const links = p.links || [], main = links[0];
       const href = main ? `href="${esc(main.url)}"${ext(main.url)}` : "";
       return `<article class="proj">
-        <a class="media${p.image ? " photo" : ""}" ${href}><span class="num">${String(i + 1).padStart(2, "0")}</span>${coverFor(p, i)}</a>
+        <a class="media" ${href}><span class="num">${String(i + 1).padStart(2, "0")}</span>${coverFor(p, i)}</a>
         <div class="body">
           <div class="meta">${p.featured ? `<span class="flag">${u("flagship")}</span>` : ""}<span>${esc(t(p.category))}</span>${p.context ? `<b>·</b><span>${esc(t(p.context))}</span>` : ""}</div>
           <h3>${main ? `<a ${href}>${esc(t(p.title))}</a>${ic.arrow}` : esc(t(p.title))}</h3>
@@ -456,14 +445,22 @@
         </div>
       </article>`;
     }).join("");
-    document.querySelectorAll(".views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
   }
 
   /* ---------- events ---------- */
-  document.querySelectorAll(".views button").forEach(b => b.addEventListener("click", () => {
-    view = b.dataset.view; store.set("view", view); renderProjects();
-    if (location.hash && location.hash !== "#projects") location.hash = "#projects";
-  }));
+  /* ---------- contact: copy the address (mailto alone does nothing without a mail app) ---------- */
+  let toastTimer;
+  function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 3200); }
+  async function copyEmail() {
+    const mail = S.links.email; if (!mail) return;
+    try { await navigator.clipboard.writeText(mail); }
+    catch { const ta = document.createElement("textarea"); ta.value = mail; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch {} ta.remove(); }
+    toast(`${u("copied")} ${mail}`);
+  }
+  document.addEventListener("click", e => {
+    if (e.target.closest("[data-copy]")) { e.preventDefault(); copyEmail(); return; }
+    if (e.target.closest("[data-mail]")) copyEmail(); // the mailto link still opens the mail app when there is one
+  });
   document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
     if (b.dataset.lang === lang) return;
     lang = b.dataset.lang; store.set("lang", lang);
@@ -478,6 +475,8 @@
     const id = ["projects", "background", "links"].includes(page) ? page : "projects";
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "page-" + id));
     document.querySelectorAll(".nav a.tab").forEach(a => a.classList.toggle("on", a.dataset.page === id));
+    $("crumb").innerHTML = id === "projects" ? `<b>${u("crumbProjects")}</b><span>${S.projects.length} ${u("projectsWord")}</span>`
+      : `<b>${u(id === "background" ? "crumbBackground" : "crumbLinks")}</b>`;
     if (scroll) window.scrollTo({ top: 0 });
   }
   window.addEventListener("hashchange", () => route());

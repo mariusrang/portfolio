@@ -32,8 +32,8 @@ window.SITE = {
     },
   },
 
-  /*  cover: "network" | "blocks" | "orbit" | "grid" | "bars" | "map" | "waves" | "invader"
-      or image: "assets/projects/my-image.jpg"
+  /*  image: "assets/projects/my-image.jpg"  (landscape, ideally 1200 × 960)
+      — without an image, a generated pattern is used instead
       featured: true  → shows a "Flagship" badge                                         */
   projects: [
     {
@@ -47,7 +47,7 @@ window.SITE = {
       },
       tags: ["Python", "MCP", "Claude", "Alteryx Server"],
       links: [],
-      cover: "network",
+      image: "assets/projects/mcp-alteryx.jpg",
     },
     {
       category: { en: "LLM evaluation", fr: "Évaluation de LLM" },
@@ -74,7 +74,7 @@ window.SITE = {
       },
       tags: ["Alteryx", "Supabase", "SQL", "MCP"],
       links: [],
-      cover: "grid",
+      image: "assets/projects/data-quality.jpg",
     },
     {
       category: { en: "Compliance · Finance", fr: "Conformité · Finance" },
@@ -86,7 +86,7 @@ window.SITE = {
       },
       tags: ["Alteryx", { en: "Regulatory", fr: "Réglementaire" }, { en: "PDF reporting", fr: "Reporting PDF" }],
       links: [],
-      cover: "bars",
+      image: "assets/projects/amf-compliance.jpg",
     },
     {
       category: "Machine learning",
@@ -98,7 +98,7 @@ window.SITE = {
       },
       tags: ["Python", "scikit-learn", "Optuna", "MLflow", "Pandera"],
       links: [{ label: "GitHub", url: "https://github.com/mariusrang/Predicting-plant-production" }],
-      cover: "blocks",
+      image: "assets/projects/steel-prediction.jpg",
     },
     {
       category: { en: "Geospatial · Data viz", fr: "Géospatial · Data viz" },
@@ -113,7 +113,7 @@ window.SITE = {
         { label: { en: "Live app", fr: "App en ligne" }, url: "https://aidams-lab1-gusching-rang-henz-guetari-citthygx7ko6rixwsgvrob.streamlit.app/" },
         { label: "GitHub", url: "https://github.com/mariusrang/steel-industry-geospatial-analysis" },
       ],
-      cover: "map",
+      image: "assets/projects/steel-map.jpg",
     },
     {
       category: { en: "GenAI tooling", fr: "Outils GenAI" },
@@ -125,7 +125,7 @@ window.SITE = {
       },
       tags: ["Python", { en: "Alteryx macros", fr: "Macros Alteryx" }, "LLM APIs"],
       links: [],
-      cover: "waves",
+      image: "assets/projects/token-extraction.jpg",
     },
     {
       category: { en: "Game · Python", fr: "Jeu · Python" },
@@ -137,7 +137,7 @@ window.SITE = {
       },
       tags: ["Python", "turtle"],
       links: [{ label: "GitHub", url: "https://github.com/Isabelle333/Space-Invaders_Group-10" }],
-      cover: "invader",
+      image: "assets/projects/space-invaders.jpg",
     },
     {
       category: "Deep learning",
@@ -149,7 +149,7 @@ window.SITE = {
       },
       tags: ["Neural networks", "PyTorch", { en: "Teaching", fr: "Pédagogie" }],
       links: [],
-      cover: "orbit",
+      image: "assets/projects/automatants.jpg",
     },
   ],
 
