@@ -1,8 +1,10 @@
-# Portfolio
+# Marius Rang — Portfolio
 
-- `content.js` — all the text, projects and links. This is the only file you need to edit.
-- `assets/cv.pdf` — your CV (keep this exact name).
-- `assets/logos/` — school logos (see README inside).
-- `assets/projects/` — optional project images (use `image: "assets/projects/xxx.jpg"` in content.js).
+Live: https://marius-rang.vercel.app/
 
-Deploy: push this folder to GitHub, then import the repo on vercel.com (no build settings needed).
+- `content.js` — all text, projects and links (English + French). The only file to edit.
+- `assets/projects/` — project images (1200 × 960).
+- `assets/video/` — demo videos.
+- `assets/logos/`, `assets/photo.jpg`, `assets/og.jpg` (link preview), `assets/cv.pdf`.
+
+Each project gets its own page at `#p/<slug>`. Plain HTML/CSS/JS, no build step — Vercel deploys it as is.

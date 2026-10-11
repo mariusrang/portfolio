@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marius Rang — Portfolio</title>
-<meta name="description" content="Marius Rang — CentraleSupélec × ESSEC. Agentic AI, data and machine learning projects.">
+<meta name="description" content="Marius Rang — CentraleSupélec × ESSEC student building applied AI: MCP servers, LLM evaluation and computer vision.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://marius-rang.vercel.app/">
 <meta property="og:title" content="Marius Rang — Portfolio">
-<meta property="og:description" content="CentraleSupélec × ESSEC. Agentic AI, data and machine learning projects.">
+<meta property="og:description" content="CentraleSupélec × ESSEC student building applied AI: an MCP server presented to Alteryx, LLM evaluation, and two 1st places in ML competitions.">
+<meta property="og:image" content="https://marius-rang.vercel.app/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://marius-rang.vercel.app/assets/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111214'/%3E%3Ctext x='7' y='23' font-family='Arial' font-weight='700' font-size='18' fill='white'%3EM%3C/text%3E%3Ccircle cx='25' cy='21' r='2.6' fill='%234757e6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,10 +62,14 @@
   /* ---------- sub bar ---------- */
   .sub { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0; }
   .crumb { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); min-height:32px; }
+  .crumb a:hover b { background:var(--line); }
   .crumb b { font-weight:500; color:var(--fg); background:var(--chip); padding:6px 12px; border-radius:6px; }
   .sub .right { display:flex; align-items:center; gap:14px; color:var(--muted); font-size:13.5px; }
   .icon-btn { border:0; background:transparent; padding:6px; border-radius:6px; cursor:pointer; color:var(--muted); display:grid; place-items:center; }
   .icon-btn:hover { background:var(--chip); color:var(--fg); }
+  .icon-btn .sun { display:none; }
+  :root[data-theme="dark"] .icon-btn .sun { display:block; } :root[data-theme="dark"] .icon-btn .moon { display:none; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .icon-btn .sun { display:block; } :root:not([data-theme="light"]) .icon-btn .moon { display:none; } }
 
   /* ---------- pages ---------- */
   .page { display:none; padding:56px 0 40px; }
@@ -74,9 +85,9 @@
   .proj .media svg.cover, .proj .media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform .6s cubic-bezier(.2,.7,.2,1); }
   .proj:hover .media svg.cover, .proj:hover .media img { transform:scale(1.03); }
   .proj .num { position:absolute; top:14px; left:14px; z-index:1; font-size:12.5px; color:#5d6068; }
-  .proj .meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-  .proj .meta b { font-weight:400; }
-  .proj .flag { color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 6px; letter-spacing:.08em; font-size:11px; line-height:18px; }
+  .meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+  .meta b { font-weight:400; }
+  .flag { color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 6px; letter-spacing:.08em; font-size:11px; line-height:18px; }
   .proj h3 { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; font:500 25px/1.25 var(--display); letter-spacing:-.01em; margin:12px 0 12px; }
   .proj h3 .i { width:17px; height:17px; margin-top:5px; transition:transform .2s; }
   .proj:hover h3 .i { transform:translate(2px,-2px); }
@@ -88,11 +99,56 @@
   .plinks a:hover { border-color:var(--fg); }
   .plinks .i { width:14px; height:14px; }
 
-  .projects.editorial { display:grid; grid-template-columns:1fr 1fr; gap:56px 28px; padding-top:44px; border-top:1px solid var(--line); margin-top:44px; }
+  .projects.editorial { display:grid; grid-template-columns:1fr 1fr; gap:56px 28px; margin-top:56px; }
   .projects.editorial .media { aspect-ratio:1.25; }
   .projects.editorial .body { padding-top:22px; }
 
 
+
+  /* ---------- home intro ---------- */
+  .me { display:flex; align-items:center; gap:16px; }
+  .me img { width:64px; height:64px; border-radius:50%; object-fit:cover; flex:none; border:1px solid var(--line); }
+  .me .kicker { margin:0; }
+  .now { display:flex; flex-wrap:wrap; gap:8px 10px; margin:26px 0 0; padding:0; list-style:none; }
+  .now li { font-size:13.5px; color:var(--fg); background:var(--chip); border-radius:999px; padding:6px 13px; }
+  .now li:first-child::before { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#22b573; margin-right:8px; vertical-align:1px; }
+  .hl { display:grid; grid-template-columns:repeat(4, 1fr); margin-top:44px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .hl div { padding:22px 20px 22px 0; }
+  .hl div + div { padding-left:20px; border-left:1px solid var(--line); }
+  .hl b { display:block; font:500 26px/1.15 var(--display); letter-spacing:-.01em; color:var(--accent); }
+  .hl span { display:block; margin-top:6px; font-size:13.5px; color:var(--muted); line-height:1.5; }
+  .metric { color:var(--accent); border:1px solid currentColor; border-radius:4px; padding:0 6px; letter-spacing:.08em; font-size:11px; line-height:18px; }
+  .readmore { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:14px; font-weight:500; border-bottom:1px solid var(--fg); padding-bottom:1px; }
+  .readmore .i { width:14px; height:14px; }
+
+  /* ---------- project detail ---------- */
+  .back { display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); margin-bottom:28px; }
+  .back:hover { color:var(--fg); }
+  .detail h1 { font:500 clamp(36px, 5.6vw, 58px)/1.08 var(--display); letter-spacing:-.025em; margin:18px 0 18px; }
+  .detail .lead { font-size:18px; line-height:1.7; color:var(--muted); max-width:720px; margin:0; }
+  .detail .hero-media { margin-top:40px; border-radius:8px; overflow:hidden; background:var(--chip); }
+  .detail .hero-media { background:#eaecf1; }
+  .detail .hero-media img { display:block; width:100%; height:auto; max-height:560px; object-fit:contain; }
+  .detail .hero-media video { display:block; width:100%; height:auto; background:#000; }
+  .detail .note { font-size:13.5px; color:var(--muted); margin:12px 0 0; }
+  .sec { display:grid; grid-template-columns:188px 1fr; gap:0 40px; padding:30px 0; border-top:1px solid var(--line); }
+  .sec:first-of-type { margin-top:48px; }
+  .sec .lbl { font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding-top:4px; }
+  .sec p { margin:0; font-size:16px; line-height:1.75; max-width:720px; }
+  .sec ul { margin:0; padding:0; list-style:none; max-width:720px; }
+  .sec li { position:relative; padding-left:20px; margin:0 0 10px; line-height:1.7; }
+  .sec li::before { content:""; position:absolute; left:0; top:13px; width:8px; height:1px; background:var(--accent); }
+  .chart { margin:4px 0 20px; max-width:620px; }
+  .chart .ct { font-size:13.5px; color:var(--muted); margin:0 0 12px; }
+  .bar { display:grid; grid-template-columns:130px 1fr 64px; align-items:center; gap:12px; margin:8px 0; font-size:14px; }
+  .bar .track { height:12px; background:var(--chip); border-radius:3px; overflow:hidden; }
+  .bar .fill { height:100%; background:color-mix(in srgb, var(--accent) 38%, var(--chip)); border-radius:3px; }
+  .bar.best .fill { background:var(--accent); }
+  .bar .v { font-variant-numeric:tabular-nums; text-align:right; }
+  .bar.best .v { color:var(--accent); font-weight:500; }
+  .detail .plinks { margin-top:0; }
+  .next { display:flex; justify-content:space-between; gap:16px; margin-top:48px; padding-top:24px; border-top:1px solid var(--line); font-size:14px; }
+  .next a { color:var(--muted); } .next a:hover { color:var(--fg); }
 
   /* ---------- background ---------- */
   .block { margin-top:72px; }
@@ -156,6 +212,11 @@
     .page { padding-top:36px; }
     .projects.editorial { grid-template-columns:1fr; }
     .row { grid-template-columns:1fr; gap:6px; padding-top:26px; }
+    .hl { grid-template-columns:1fr 1fr; }
+    .hl div:nth-child(3) { padding-left:0; border-left:0; }
+    .hl div:nth-child(n+3) { border-top:1px solid var(--line); }
+    .sec { grid-template-columns:1fr; gap:10px; }
+    .bar { grid-template-columns:96px 1fr 56px; }
     .row.skill { padding-top:20px; }
     .link { grid-template-columns:24px 1fr; }
     .link .btns { grid-column:2; justify-content:flex-start; }
@@ -186,13 +247,15 @@
     <div class="right">
       <span class="tagline" data-ui="tagline"></span>
       <button class="icon-btn" id="theme" aria-label="Light / dark">
-        <svg class="i" viewBox="0 0 24 24"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg>
+        <svg class="i moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg class="i sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       </button>
     </div>
   </div>
 
   <main>
     <section class="page" id="page-projects"><div class="hero" id="projectsHero"></div><div id="projectList"></div></section>
+    <section class="page detail" id="page-project"></section>
     <section class="page" id="page-background"><div class="hero" id="backgroundHero"></div><div id="backgroundBody"></div></section>
     <section class="page" id="page-links"><div class="hero" id="linksHero"></div><div class="links" id="linkList"></div><div id="usefulWrap"></div></section>
   </main>
@@ -225,7 +288,9 @@
           cvTitle:"Curriculum vitæ", cvDesc:"My path in one document.", talkTitle:"Let's talk", talkDesc:"Projects, research and opportunities.",
           useful:"Useful links", theme:"Light / dark",
           crumbProjects:"Selected work", projectsWord:"projects", crumbBackground:"Education · Experience · Skills", crumbLinks:"GitHub · LinkedIn · CV · Contact",
-          copy:"Copy email", copied:"Email copied —" },
+          copy:"Copy email", copied:"Email copied —",
+          now:"Now", readCase:"Read the case study", back:"All projects", problem:"The problem", built:"What I built", results:"Results",
+          role:"My role", learned:"What I learned", stack:"Stack", links:"Links", next:"Next project", prev:"Previous project" },
     fr: { navProjects:"Projets", navBackground:"Parcours", navLinks:"Liens", myCv:"Mon CV",
           tagline:"Un parcours. Plusieurs perspectives.",
           flagship:"Projet phare", education:"Formation", experience:"Stages & expériences", skills:"Compétences", interests:"Domaines d'intérêt",
@@ -234,7 +299,9 @@
           cvTitle:"Mon curriculum vitæ", cvDesc:"Mon parcours en un document.", talkTitle:"Discutons ensemble", talkDesc:"Projets, recherche et opportunités.",
           useful:"Liens utiles", theme:"Clair / sombre",
           crumbProjects:"Sélection de travaux", projectsWord:"projets", crumbBackground:"Formation · Expériences · Compétences", crumbLinks:"GitHub · LinkedIn · CV · Contact",
-          copy:"Copier l'email", copied:"Email copié —" },
+          copy:"Copier l'email", copied:"Email copié —",
+          now:"En ce moment", readCase:"Lire l'étude de cas", back:"Tous les projets", problem:"Le problème", built:"Ce que j'ai construit", results:"Résultats",
+          role:"Mon rôle", learned:"Ce que j'ai appris", stack:"Stack", links:"Liens", next:"Projet suivant", prev:"Projet précédent" },
   };
   const urlLang = new URLSearchParams(location.search).get("lang");
   let lang = ["en", "fr"].includes(urlLang) ? urlLang : (store.get("lang") === "fr" ? "fr" : "en");
@@ -391,7 +458,12 @@
     ].filter(Boolean).join("");
 
     // projects
-    $("projectsHero").innerHTML = hero(S.projectsPage);
+    const P = S.projectsPage;
+    $("projectsHero").innerHTML = `
+      <div class="me">${S.photo ? `<img src="${esc(S.photo)}" alt="${esc(S.name)}">` : ""}<p class="kicker">${esc(t(P.kicker))}</p></div>
+      <h1>${esc(t(P.title))}</h1><p class="intro">${esc(t(P.intro))}</p>
+      ${S.now && S.now.length ? `<ul class="now" aria-label="${u("now")}">${S.now.map(x => `<li>${esc(t(x))}</li>`).join("")}</ul>` : ""}
+      ${S.highlights && S.highlights.length ? `<div class="hl">${S.highlights.map(h => `<div><b>${esc(t(h.value))}</b><span>${esc(t(h.label))}</span></div>`).join("")}</div>` : ""}`;
     renderProjects();
 
     // background
@@ -431,20 +503,54 @@
   function renderProjects() {
     const list = $("projectList");
     list.className = "projects editorial";
-    list.innerHTML = S.projects.map((p, i) => {
-      const links = p.links || [], main = links[0];
-      const href = main ? `href="${esc(main.url)}"${ext(main.url)}` : "";
+    list.innerHTML = visible().map((p, i) => {
+      const links = p.links || [], href = `href="#p/${esc(p.slug)}"`;
       return `<article class="proj">
-        <a class="media" ${href}><span class="num">${String(i + 1).padStart(2, "0")}</span>${coverFor(p, i)}</a>
+        <a class="media" ${href} aria-label="${esc(t(p.title))}"><span class="num">${String(i + 1).padStart(2, "0")}</span>${coverFor(p, i)}</a>
         <div class="body">
-          <div class="meta">${p.featured ? `<span class="flag">${u("flagship")}</span>` : ""}<span>${esc(t(p.category))}</span>${p.context ? `<b>·</b><span>${esc(t(p.context))}</span>` : ""}</div>
-          <h3>${main ? `<a ${href}>${esc(t(p.title))}</a>${ic.arrow}` : esc(t(p.title))}</h3>
-          <p>${esc(t(p.desc))}</p>
+          <div class="meta">${p.featured ? `<span class="flag">${u("flagship")}</span>` : ""}${p.metric && !p.featured ? `<span class="metric">${esc(t(p.metric))}</span>` : ""}<span>${esc(t(p.category))}</span></div>
+          <h3><a ${href}>${esc(t(p.title))}</a>${ic.arrow}</h3>
+          <p>${esc(t(p.summary || p.desc))}</p>
           ${tags(p.tags)}
           ${links.length ? `<div class="plinks">${links.map(l => `<a href="${esc(l.url)}"${ext(l.url)}>${esc(t(l.label))} ${ic.arrow}</a>`).join("")}</div>` : ""}
         </div>
       </article>`;
     }).join("");
+  }
+
+  const visible = () => S.projects.filter(p => !p.hidden);
+  function renderDetail(slug) {
+    const list = visible(), i = list.findIndex(p => p.slug === slug), p = list[i];
+    if (!p) return false;
+    const sec = (label, html) => html ? `<div class="sec"><div class="lbl">${esc(label)}</div><div>${html}</div></div>` : "";
+    const ul = arr => arr && arr.length ? `<ul>${arr.map(x => `<li>${esc(t(x))}</li>`).join("")}</ul>` : "";
+    const chart = c => {
+      if (!c) return "";
+      const max = Math.max(...c.bars.map(b => b.value)), min = c.min ?? 0;
+      return `<div class="chart"><p class="ct">${esc(t(c.title))}</p>${c.bars.map(b => `
+        <div class="bar${b.best ? " best" : ""}"><span>${esc(t(b.label))}</span><div class="track"><div class="fill" style="width:${Math.max(2, (b.value - min) / (max - min || 1) * 100)}%"></div></div><span class="v">${b.value === 100 ? "100" : b.value.toLocaleString(lang === "fr" ? "fr-FR" : "en-US", { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${esc(c.unit || "")}</span></div>`).join("")}</div>`;
+    };
+    const media = p.video
+      ? `<div class="hero-media"><video controls playsinline preload="none" poster="${esc(p.video.poster || p.image || "")}" src="${esc(p.video.src)}"></video></div>`
+      : (p.image ? `<div class="hero-media"><img src="${esc(p.image)}" alt=""></div>` : "");
+    const links = (p.links || []).length ? `<div class="plinks">${p.links.map(l => `<a href="${esc(l.url)}"${ext(l.url)}>${esc(t(l.label))} ${ic.arrow}</a>`).join("")}</div>` : "";
+    const prev = list[i - 1], next = list[i + 1];
+    $("page-project").innerHTML = `
+      <a class="back" href="#projects">← ${u("back")}</a>
+      <div class="meta">${p.featured ? `<span class="flag">${u("flagship")}</span>` : ""}${p.metric ? `<span class="metric">${esc(t(p.metric))}</span>` : ""}<span>${esc(t(p.category))}</span><b>·</b><span>${esc(t(p.context))}</span></div>
+      <h1>${esc(t(p.title))}</h1>
+      <p class="lead">${esc(t(p.summary))}</p>
+      ${media}
+      ${p.note ? `<p class="note">${esc(t(p.note))}</p>` : ""}
+      ${sec(u("problem"), p.problem && `<p>${esc(t(p.problem))}</p>`)}
+      ${sec(u("built"), ul(p.built))}
+      ${sec(u("results"), chart(p.chart) + ul(p.results))}
+      ${sec(u("role"), p.role && `<p>${esc(t(p.role))}</p>`)}
+      ${sec(u("learned"), p.learned && `<p>${esc(t(p.learned))}</p>`)}
+      ${sec(u("stack"), tags(p.tags))}
+      ${sec(u("links"), links)}
+      <div class="next">${prev ? `<a href="#p/${esc(prev.slug)}">← ${esc(t(prev.title))}</a>` : "<span></span>"}${next ? `<a href="#p/${esc(next.slug)}">${esc(t(next.title))} →</a>` : ""}</div>`;
+    return p;
   }
 
   /* ---------- events ---------- */
@@ -472,11 +578,14 @@
 
   function route(scroll = true) {
     const page = (location.hash || "#projects").slice(1);
-    const id = ["projects", "background", "links"].includes(page) ? page : "projects";
+    let id = ["projects", "background", "links"].includes(page) ? page : "projects", proj = null;
+    if (page.startsWith("p/")) { proj = renderDetail(page.slice(2)); if (proj) id = "project"; }
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "page-" + id));
-    document.querySelectorAll(".nav a.tab").forEach(a => a.classList.toggle("on", a.dataset.page === id));
-    $("crumb").innerHTML = id === "projects" ? `<b>${u("crumbProjects")}</b><span>${S.projects.length} ${u("projectsWord")}</span>`
+    document.querySelectorAll(".nav a.tab").forEach(a => a.classList.toggle("on", a.dataset.page === (id === "project" ? "projects" : id)));
+    $("crumb").innerHTML = id === "projects" ? `<b>${u("crumbProjects")}</b><span>${visible().length} ${u("projectsWord")}</span>`
+      : id === "project" ? `<a href="#projects"><b>${u("crumbProjects")}</b></a><span>${esc(t(proj.title))}</span>`
       : `<b>${u(id === "background" ? "crumbBackground" : "crumbLinks")}</b>`;
+    document.title = id === "project" ? `${t(proj.title)} — ${S.name}` : `${S.name} — Portfolio`;
     if (scroll) window.scrollTo({ top: 0 });
   }
   window.addEventListener("hashchange", () => route());
