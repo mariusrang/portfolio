@@ -130,6 +130,8 @@
   .detail .hero-media { background:#eaecf1; }
   .detail .hero-media img { display:block; width:100%; height:auto; max-height:560px; object-fit:contain; }
   .detail .hero-media video { display:block; width:100%; height:auto; background:#000; }
+  .detail .hero-media.portrait { border:1px solid var(--line); }
+  .detail .hero-media.portrait video { width:auto; max-width:100%; height:min(72vh, 680px); margin:0 auto; background:transparent; }
   .detail .note { font-size:13.5px; color:var(--muted); margin:12px 0 0; }
   .sec { display:grid; grid-template-columns:188px 1fr; gap:0 40px; padding:30px 0; border-top:1px solid var(--line); }
   .sec:first-of-type { margin-top:48px; }
@@ -147,6 +149,10 @@
   .bar .v { font-variant-numeric:tabular-nums; text-align:right; }
   .bar.best .v { color:var(--accent); font-weight:500; }
   .detail .plinks { margin-top:0; }
+  .gallery { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .gallery figure { margin:0; }
+  .gallery img { display:block; width:100%; border-radius:6px; border:1px solid var(--line); }
+  .gallery figcaption { font-size:13.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
   .next { display:flex; justify-content:space-between; gap:16px; margin-top:48px; padding-top:24px; border-top:1px solid var(--line); font-size:14px; }
   .next a { color:var(--muted); } .next a:hover { color:var(--fg); }
 
@@ -217,6 +223,7 @@
     .hl div:nth-child(n+3) { border-top:1px solid var(--line); }
     .sec { grid-template-columns:1fr; gap:10px; }
     .bar { grid-template-columns:96px 1fr 56px; }
+    .gallery { grid-template-columns:1fr; }
     .row.skill { padding-top:20px; }
     .link { grid-template-columns:24px 1fr; }
     .link .btns { grid-column:2; justify-content:flex-start; }
@@ -290,7 +297,7 @@
           crumbProjects:"Selected work", projectsWord:"projects", crumbBackground:"Education · Experience · Skills", crumbLinks:"GitHub · LinkedIn · CV · Contact",
           copy:"Copy email", copied:"Email copied —",
           now:"Now", readCase:"Read the case study", back:"All projects", problem:"The problem", built:"What I built", results:"Results",
-          role:"My role", learned:"What I learned", stack:"Stack", links:"Links", next:"Next project", prev:"Previous project" },
+          role:"My role", learned:"What I learned", gallery:"Screenshots", stack:"Stack", links:"Links", next:"Next project", prev:"Previous project" },
     fr: { navProjects:"Projets", navBackground:"Parcours", navLinks:"Liens", myCv:"Mon CV",
           tagline:"Un parcours. Plusieurs perspectives.",
           flagship:"Projet phare", education:"Formation", experience:"Stages & expériences", skills:"Compétences", interests:"Domaines d'intérêt",
@@ -301,7 +308,7 @@
           crumbProjects:"Sélection de travaux", projectsWord:"projets", crumbBackground:"Formation · Expériences · Compétences", crumbLinks:"GitHub · LinkedIn · CV · Contact",
           copy:"Copier l'email", copied:"Email copié —",
           now:"En ce moment", readCase:"Lire l'étude de cas", back:"Tous les projets", problem:"Le problème", built:"Ce que j'ai construit", results:"Résultats",
-          role:"Mon rôle", learned:"Ce que j'ai appris", stack:"Stack", links:"Liens", next:"Projet suivant", prev:"Projet précédent" },
+          role:"Mon rôle", learned:"Ce que j'ai appris", gallery:"Captures", stack:"Stack", links:"Liens", next:"Projet suivant", prev:"Projet précédent" },
   };
   const urlLang = new URLSearchParams(location.search).get("lang");
   let lang = ["en", "fr"].includes(urlLang) ? urlLang : (store.get("lang") === "fr" ? "fr" : "en");
@@ -528,11 +535,11 @@
       if (!c) return "";
       const max = Math.max(...c.bars.map(b => b.value)), min = c.min ?? 0;
       return `<div class="chart"><p class="ct">${esc(t(c.title))}</p>${c.bars.map(b => `
-        <div class="bar${b.best ? " best" : ""}"><span>${esc(t(b.label))}</span><div class="track"><div class="fill" style="width:${Math.max(2, (b.value - min) / (max - min || 1) * 100)}%"></div></div><span class="v">${b.value === 100 ? "100" : b.value.toLocaleString(lang === "fr" ? "fr-FR" : "en-US", { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${esc(c.unit || "")}</span></div>`).join("")}</div>`;
+        <div class="bar${b.best ? " best" : ""}"><span>${esc(t(b.label))}</span><div class="track"><div class="fill" style="width:${Math.max(2, (b.value - min) / (max - min || 1) * 100)}%"></div></div><span class="v">${b.value === 100 ? "100" : b.value.toLocaleString(lang === "fr" ? "fr-FR" : "en-US", { minimumFractionDigits: c.decimals ?? 1, maximumFractionDigits: 2 })} ${esc(c.unit || "")}</span></div>`).join("")}</div>`;
     };
     const media = p.video
-      ? `<div class="hero-media"><video controls playsinline preload="none" poster="${esc(p.video.poster || p.image || "")}" src="${esc(p.video.src)}"></video></div>`
-      : (p.image ? `<div class="hero-media"><img src="${esc(p.image)}" alt=""></div>` : "");
+      ? `<div class="hero-media${p.video.portrait ? " portrait" : ""}"${p.video.bg ? ` style="background:${esc(p.video.bg)}"` : ""}><video controls playsinline preload="none" poster="${esc(p.video.poster || p.image || "")}" src="${esc(p.video.src)}"></video></div>`
+      : ((p.heroImage || p.image) ? `<div class="hero-media"><img src="${esc(p.heroImage || p.image)}" alt=""></div>` : "");
     const links = (p.links || []).length ? `<div class="plinks">${p.links.map(l => `<a href="${esc(l.url)}"${ext(l.url)}>${esc(t(l.label))} ${ic.arrow}</a>`).join("")}</div>` : "";
     const prev = list[i - 1], next = list[i + 1];
     $("page-project").innerHTML = `
@@ -545,6 +552,7 @@
       ${sec(u("problem"), p.problem && `<p>${esc(t(p.problem))}</p>`)}
       ${sec(u("built"), ul(p.built))}
       ${sec(u("results"), chart(p.chart) + ul(p.results))}
+      ${sec(u("gallery"), p.gallery && p.gallery.length ? `<div class="gallery">${p.gallery.map(g => `<figure><a href="${esc(g.src)}" target="_blank" rel="noopener"><img src="${esc(g.src)}" alt="" loading="lazy"></a><figcaption>${esc(t(g.caption))}</figcaption></figure>`).join("")}</div>` : "")}
       ${sec(u("role"), p.role && `<p>${esc(t(p.role))}</p>`)}
       ${sec(u("learned"), p.learned && `<p>${esc(t(p.learned))}</p>`)}
       ${sec(u("stack"), tags(p.tags))}

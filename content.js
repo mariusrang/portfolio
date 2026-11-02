@@ -45,7 +45,7 @@ window.SITE = {
     { value: { en: "2× 1st", fr: "2× 1re" }, label: { en: "place in class ML competitions (Kaggle)", fr: "place en compétitions de ML du cours (Kaggle)" } },
     { value: "MCP", label: { en: "server built from scratch, presented to Alteryx", fr: "serveur construit de zéro, présenté à Alteryx" } },
     { value: "66.7 → 100 %", label: { en: "prompt reliability with Prompt Bench", fr: "de fiabilité d'un prompt avec Prompt Bench" } },
-    { value: "99.83 %", label: { en: "accuracy on 7-class emoji classification", fr: "d'accuracy en classification d'emojis (7 classes)" } },
+    { value: { en: "156,071", fr: "156 071" }, label: { en: "AI models in my Neo4j lineage graph (ModelAtlas)", fr: "modèles d'IA dans mon graphe de lignée Neo4j (ModelAtlas)" } },
   ],
 
   /* ================= PROJECTS =================
@@ -87,6 +87,61 @@ window.SITE = {
         fr: "Concevoir un serveur MCP de bout en bout : design des outils, authentification, suivi de jobs asynchrones et fichiers de sortie. Le protocole est générique — la même approche branche n'importe quelle API sur n'importe quel modèle compatible MCP.",
       },
       note: { en: "Demo video (2 min 51, subtitled). The code itself is private — it belongs to the company.", fr: "Vidéo de démo (2 min 51, sous-titrée). Le code est privé : il appartient à l'entreprise." },
+    },
+    {
+      slug: "modelatlas",
+      category: "Knowledge graph · Agentic AI",
+      context: { en: "Course project · Team of 3, project lead · 2026", fr: "Projet de cours · Équipe de 3, chef de projet · 2026" },
+      title: { en: "Tracing the lineage of AI models.", fr: "Remonter la lignée des modèles." },
+      summary: {
+        en: "A Neo4j knowledge graph linking 156,071 public Hugging Face models to their parents, licences and training data — to answer one question: can I use this model commercially?",
+        fr: "Un graphe de connaissances Neo4j qui relie 156 071 modèles publics de Hugging Face à leurs parents, licences et données d'entraînement — pour répondre à une question : puis-je utiliser ce modèle commercialement ?",
+      },
+      metric: { en: "156,071 models", fr: "156 071 modèles" },
+      tags: ["Neo4j + GDS", "FastAPI", "LangGraph", "Ollama", "scikit-learn", "Docker"],
+      links: [
+        { label: "GitHub", url: "https://github.com/mariusrang/ModelAtlas" },
+        { label: { en: "Presentation video (9 min)", fr: "Vidéo de présentation (9 min)" }, url: "https://drive.google.com/file/d/1EXboKRmthk8ltzbUW3r5Yj9isAu7pCwB/view?usp=sharing" },
+      ],
+      image: "assets/projects/modelatlas.jpg",
+      video: { src: "assets/video/modelatlas-demo.mp4", poster: "assets/video/modelatlas-demo-poster.jpg", portrait: true, bg: "#fbfaf6" },
+      problem: {
+        en: "Most Hugging Face models are built on other models — fine-tunes, quantized copies, merges — and each author types the licence and parent by hand. The licence shown is not always the one that applies: a non-commercial restriction higher up the family still holds. Checking that by hand is impossible across 150,000 models, and a chatbot alone can make a licence up.",
+        fr: "La plupart des modèles Hugging Face sont construits sur d'autres modèles — fine-tunes, copies quantifiées, fusions — et chaque auteur déclare à la main la licence et le parent. La licence affichée n'est pas forcément celle qui s'applique : une restriction non commerciale plus haut dans la famille reste valable. Le vérifier à la main est impossible sur 150 000 modèles, et un chatbot seul peut inventer une licence.",
+      },
+      built: [
+        { en: "A data pipeline turning two public Hugging Face dumps (861,627 model cards, ~631,000 dataset cards) into a Neo4j graph, with every cleaning rule backed by data profiling.", fr: "Un pipeline qui transforme deux dumps publics Hugging Face (861 627 model cards, ~631 000 dataset cards) en graphe Neo4j, chaque règle de nettoyage s'appuyant sur un profilage des données." },
+        { en: "A graph model with 8 node types and 4 lineage types (fine-tune, adapter, quantization, merge); every answer carries a trust label: VERIFIED, DERIVED or HYPOTHESIS.", fr: "Un modèle de graphe à 8 types de nœuds et 4 types de lignée (fine-tune, adapter, quantization, merge) ; chaque réponse porte une étiquette de fiabilité : VERIFIED, DERIVED ou HYPOTHESIS." },
+        { en: "A conservative licence check: the strictest status of the model, all its ancestors and its data wins, and an unknown licence is never approved. Served by a FastAPI API (~15 endpoints) and a 6-page Streamlit app.", fr: "Une vérification de licence prudente : le statut le plus restrictif du modèle, de tous ses ancêtres et de ses données l'emporte, et une licence inconnue n'est jamais validée. Servie par une API FastAPI (~15 endpoints) et une app Streamlit de 6 pages." },
+        { en: "Graph Data Science (PageRank, WCC, Louvain, Node Similarity, FastRP) and link prediction to recover missing parents (gradient boosting, time-based split).", fr: "Graph Data Science (PageRank, WCC, Louvain, Node Similarity, FastRP) et link prediction pour retrouver les parents manquants (gradient boosting, découpage temporel)." },
+        { en: "“Ask Atlas”, a LangGraph agent on a local LLM (Ollama, Qwen 2.5 7B) with 9 tools, cited facts and 5 safety layers around the Cypher it writes — question filter, static check, EXPLAIN plan check, read-only session with timeout, citation check. A single Docker Compose command runs all 5 services.", fr: "« Ask Atlas », un agent LangGraph sur un LLM local (Ollama, Qwen 2.5 7B) avec 9 outils, des faits cités et 5 couches de sécurité autour du Cypher qu'il génère — filtre de questions, contrôle statique, analyse du plan EXPLAIN, session en lecture seule avec timeout, vérification des citations. Une seule commande Docker Compose lance les 5 services." },
+      ],
+      chart: { title: { en: "Missing-parent prediction — true parent ranked first (Hits@1, 4,000 newer models)", fr: "Prédiction des parents manquants — vrai parent classé premier (Hits@1, 4 000 modèles plus récents)" }, unit: "", min: 0, decimals: 2, bars: [
+        { label: { en: "Names only", fr: "Noms seuls" }, value: 0.16 },
+        { label: { en: "Logistic reg.", fr: "Régr. logistique" }, value: 0.39 },
+        { label: "Gradient boosting", value: 0.43, best: true },
+      ] },
+      results: [
+        { en: "156,071 models, 101,781 lineage links, 43,500 organisations, 15,500 datasets — loaded in about 100 s with every validation check passing; 58,384 model families found.", fr: "156 071 modèles, 101 781 liens de lignée, 43 500 organisations, 15 500 datasets — chargés en ~100 s, tous les contrôles passés ; 58 384 familles de modèles trouvées." },
+        { en: "Parent prediction: the true parent is ranked first 2.7× more often than with names alone; above the chosen threshold, 78.5 % of predictions are correct. 1,381 predicted parents written, always labelled HYPOTHESIS.", fr: "Prédiction des parents : le vrai parent est classé premier 2,7 fois plus souvent qu'avec les noms seuls ; au-dessus du seuil retenu, 78,5 % des prédictions sont correctes. 1 381 parents prédits écrits, toujours marqués HYPOTHESIS." },
+        { en: "Agent: 28/30 evaluation questions pass the automatic check, and all 9 destructive, injection or secret-seeking requests are refused before the LLM is even called.", fr: "Agent : 28/30 questions d'évaluation passent le contrôle automatique, et les 9 demandes destructrices, injections ou demandes de secrets sont refusées avant même l'appel au LLM." },
+        { en: "Engineering: 300+ tests, pylint 10/10, GitHub Actions CI, Docker images on GHCR; one Cypher query optimised from 287 ms to 25 ms (×11.6).", fr: "Qualité : plus de 300 tests, pylint 10/10, CI GitHub Actions, images Docker sur GHCR ; une requête Cypher optimisée de 287 ms à 25 ms (×11,6)." },
+      ],
+      note: { en: "Portfolio video (1 min 08, subtitled, with sound). Voices are AI clones of our own voices.", fr: "Vidéo portfolio (1 min 08, sous-titrée, avec le son). Les voix sont des clones IA de nos propres voix." },
+      gallery: [
+        { src: "assets/projects/modelatlas-license-check.jpg", caption: { en: "Licence check: every licence up the family tree, with trust labels.", fr: "Vérification de licence : chaque licence de l'arbre généalogique, avec étiquettes de fiabilité." } },
+        { src: "assets/projects/modelatlas-agent-answer.jpg", caption: { en: "Ask Atlas answers with cited facts from the graph.", fr: "Ask Atlas répond avec des faits cités, tirés du graphe." } },
+        { src: "assets/projects/modelatlas-agent-refusal.jpg", caption: { en: "Unsafe requests are refused before the LLM is called.", fr: "Les demandes dangereuses sont refusées avant l'appel au LLM." } },
+        { src: "assets/projects/modelatlas-neo4j-browser.jpg", caption: { en: "A lineage path in Neo4j: quantized from a fine-tune of Mistral.", fr: "Un chemin de lignée dans Neo4j : quantifié depuis un fine-tune de Mistral." } },
+      ],
+      role: {
+        en: "Project lead and main contributor (106 of 180 commits): data pipeline, graph model and API, Graph Data Science and parent prediction, the agent and the web app, final documentation. Ylias Guetari wrote the licence rules, graph schema and the agent's question filter; Lucas Magret Delord did the query benchmarks, the EXPLAIN check and the agent evaluation.",
+        fr: "Chef de projet et principal contributeur (106 commits sur 180) : pipeline de données, modèle de graphe et API, Graph Data Science et prédiction des parents, agent et application web, documentation finale. Ylias Guetari a écrit les règles de licence, le schéma du graphe et le filtre de questions de l'agent ; Lucas Magret Delord a réalisé les benchmarks de requêtes, le contrôle EXPLAIN et l'évaluation de l'agent.",
+      },
+      learned: {
+        en: "The hard part was the data, not the code: hand-typed licences, vanished parents, models declaring themselves as their own parent. A graph doesn't remove that mess — it makes it visible, and lets every answer say where it comes from.",
+        fr: "Le plus difficile, c'était les données, pas le code : licences tapées à la main, parents disparus, modèles qui se déclarent leur propre parent. Un graphe ne fait pas disparaître ce désordre — il le rend visible et permet à chaque réponse de dire d'où elle vient.",
+      },
     },
     {
       slug: "prompt-bench",
